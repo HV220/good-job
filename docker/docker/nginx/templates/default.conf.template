@@ -1,0 +1,36 @@
+server {
+    listen ${NGINX_PORT};
+
+    root /app${NGINX_INDEX_DIR};
+    index index.php;
+
+    server_name ${NGINX_SERVER};
+
+    access_log /var/log/nginx/${NGINX_SERVER}.access.log;
+    error_log /var/log/nginx/${NGINX_SERVER}.error.log;
+
+    location / {
+        try_files $uri $uri/ @mod_rewrite;
+    }
+
+    location @mod_rewrite {
+        rewrite ^/(.*)$ /index.php?$1;
+    }
+
+    location ~ /\. {
+        deny all;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass php-fpm:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+
+server {
+    server_name "~^www\.(.*)$";
+
+    return 301 $scheme://$1$request_uri ;
+}

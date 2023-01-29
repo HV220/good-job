@@ -1,0 +1,30 @@
+version: '3.4'
+services:
+    nginx:
+        image: 'nginx:1.23.2'
+        working_dir: /app
+        volumes:
+            - '$APP_DIR:/app'
+            - './docker/nginx/templates:/etc/nginx/templates'
+        ports:
+            - '$NGINX_EXPOSE_PORT:$NGINX_PORT'
+        environment:
+            - NGINX_SERVER=$NGINX_SERVER
+            - NGINX_PORT=$NGINX_PORT
+            - NGINX_INDEX_DIR=$NGINX_INDEX_DIR
+
+    php-fpm:
+        build: docker/php-fpm
+        working_dir: /app
+        volumes:
+            - '$APP_DIR:/app'
+
+    db:
+        image: 'postgres:15-bullseye'
+        working_dir: /app
+        environment:
+            - POSTGRES_USER=$DB_USER
+            - POSTGRES_PASSWORD=$DB_PASSWORD
+            - POSTGRES_DB=$DB_NAME
+        ports:
+            - '$DB_PORT:$DB_PORT'
