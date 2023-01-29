@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace common\models;
 
-use Exception;
 use Yii;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -15,9 +15,7 @@ use yii\web\IdentityInterface;
  * @property int $id ИД
  * @property string $email Электронная почта
  * @property string $auth_key Ключ аунтификации
- * @property string $surname Фамилия
- * @property string $name Имя
- * @property string|null $patronymic Отчество
+ * @property string $username Имя
  * @property int $status Статус
  * @property string|null $verification_token Токен верификации
  * @property string $password_hash Хэш пароля
@@ -25,8 +23,6 @@ use yii\web\IdentityInterface;
  * @property int $created_at Создано
  * @property int $updated_at Обновлено
  *
- * @property-read string $username
- * @property array $roles
  * @property-read string $authKey
  */
 class User extends ActiveRecord implements IdentityInterface
@@ -41,6 +37,16 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName(): string
     {
         return 'user';
+    }
+
+    /**
+     * @return string[]
+     */
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            TimestampBehavior::class,
+        ]);
     }
 
     /**
@@ -79,19 +85,16 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [
-                ['email', 'auth_key', 'surname', 'name', 'password_hash', 'created_at', 'updated_at'],
+                ['email', 'auth_key', 'username', 'password_hash'],
                 'required'
             ],
-            [['created_at', 'updated_at'], 'default', 'value' => null],
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             [['status', 'created_at', 'updated_at'], 'integer'],
             [
                 [
                     'email',
-                    'surname',
-                    'name',
-                    'patronymic',
+                    'username',
                     'verification_token',
                     'password_hash',
                     'password_reset_token'
@@ -102,7 +105,6 @@ class User extends ActiveRecord implements IdentityInterface
             [['auth_key'], 'string', 'max' => 32],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
-            [['roles'], 'safe'],
         ];
     }
 
@@ -115,16 +117,13 @@ class User extends ActiveRecord implements IdentityInterface
             'id' => 'ИД',
             'email' => 'Электронная почта',
             'auth_key' => 'Ключ аунтификации',
-            'surname' => 'Фамилия',
-            'name' => 'Имя',
-            'patronymic' => 'Отчество',
+            'username' => 'Имя',
             'status' => 'Статус',
             'verification_token' => 'Токен верификации',
             'password_hash' => 'Хэш пароля',
             'password_reset_token' => 'Токен сброса пароля',
             'created_at' => 'Создано',
             'updated_at' => 'Обновлено',
-            'roles' => 'Должность',
         ];
     }
 
@@ -170,63 +169,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return array
-     */
-    public function getRoles(): array
-    {
-        return array_keys(Yii::$app->authManager->getRolesByUser($this->id));
-    }
-
-    /**
-     * @param $roles
-     * @return void
-     * @throws Exception
-     */
-    public function setRoles($roles): void
-    {
-        // delete user role
-        foreach (array_diff($this->roles, ($roles ?: [])) as $item) {
-            Yii::$app->authManager->revoke(Yii::$app->authManager->getRole($item), $this->id);
-        }
-
-        // add user role
-        foreach (array_diff(($roles ?: []), $this->roles) as $item) {
-            Yii::$app->authManager->assign(Yii::$app->authManager->getRole($item), $this->id);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    public function getUsername(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param array $arr
-     * @return array
-     */
-    public function structureRoles(array $arr): array
-    {
-        $tmp = [];
-
-        foreach ($arr as $item) {
-            $tmp[$item] = $item;
-        }
-
-        return $tmp;
-    }
-
-    /**
      * @return bool
      */
     public function beforeDelete(): bool
@@ -236,5 +178,29 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         return Yii::$app->authManager->revokeAll($this->id);
+    }
+
+    /**
+     * @param $password
+     * @return void
+     * @throws \yii\base\Exception
+     */
+    public function setPassword($password): void
+    {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+    }
+
+    /**
+     * @return void
+     * @throws \yii\base\Exception
+     */
+    public function generateAuthKey(): void
+    {
+        $this->auth_key = Yii::$app->security->generateRandomString();
+    }
+
+    public function generateEmailVerificationToken()
+    {
+        $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 }

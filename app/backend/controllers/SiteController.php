@@ -98,17 +98,11 @@ class SiteController extends Controller
      */
     public function actionRegistration(): Response|string
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
         $model = new RegistrationForm();
-
         if ($model->load(Yii::$app->request->post()) && $model->registration()) {
+            Yii::$app->session->setFlash('success', 'Регистрация прошла успешно.');
             return Yii::$app->response->redirect(['site/login']);
         }
-
-        $model->password = '';
 
         return $this->render('registration', [
             'model' => $model,

@@ -1,85 +1,59 @@
 <?php
 
-declare(strict_types=1);
-
 namespace common\models;
 
 use Yii;
 use yii\base\Model;
-use yii\db\ActiveRecord;
+use common\models\User;
 
 /**
- * LoginForm is the model behind the login form.
- *
- * @property User|null $user This property is read-only.
- *
+ * Registration form
  */
 class RegistrationForm extends Model
 {
-    public ?string $name = null;
-    public ?string $email = null;
-    public string $password;
-    private ?User $user = null;
+    public $username;
+    public $email;
+    public $password;
 
     /**
-     * @return array the validation rules.
+     * {@inheritdoc}
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            [['name', 'email', 'password'], 'required'],
+
+            ['email', 'trim'],
+            ['username', 'required'],
+            ['email', 'required'],
             ['email', 'email'],
-            ['email', 'validateUser'],
+            ['email', 'string', 'max' => 255],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+
             ['password', 'required'],
+            ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
         ];
     }
 
     /**
-     * @return bool
+     * Signs user up.
+     *
+     * @return bool whether the creating new account was successful and email was sent
      */
-    public function registration(): bool
+    public function registration()
     {
-        if ($this->validate() && !$this->hasErrors()) {
-            $this->user = new User();
-
-            $this->user->name = $this->name;
-            $this->user->surname = $this->name;
-            $this->user->email = $this->email;
-            $this->user->created_at = time();
-            $this->user->updated_at = time();
-            $this->user->password_hash = password_hash($this->password, PASSWORD_DEFAULT);
-            $this->user->auth_key = Yii::$app->security->generateRandomString(12);
-            $this->user->save(false);
-
-            $this->user->setRoles(['Клиент']);
-
-            return true;
+        if (!$this->validate()) {
+            return null;
         }
 
-        return false;
+        $user = new User();
+        $user->username = $this->username;
+        $user->email = $this->email;
+        $user->setPassword($this->password);
+        $user->generateAuthKey();
+        $user->generateEmailVerificationToken();
+
+        $auth = Yii::$app->authManager;
+
+        return $user->save() && $auth->assign($auth->getRole('Client'), $user->getId());
     }
-
-    /**
-     * @param $attribute
-     * @return void
-     */
-    public function validateUser($attribute): void
-    {
-        if ($this->getUser()) {
-            $this->addError($attribute, 'Такой пользователь уже существует');
-        }
-    }
-
-    /**
-     * @return array|User|ActiveRecord|null
-     */
-    protected function getUser(): User|array|ActiveRecord|null
-    {
-        if ($this->user === null) {
-            $this->user = User::findIdentityByEmail($this->email);
-        }
-
-        return $this->user;
-    }
-
 }

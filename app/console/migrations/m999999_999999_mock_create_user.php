@@ -19,9 +19,9 @@ class m999999_999999_mock_create_user extends Migration
 
             $developerRole = $auth->createRole('Developer');
 
-            $auth->createRole('Менеджер');
+            $auth->add($auth->createRole('Manager'));
 
-            $auth->createRole('Клиент');
+            $auth->add($auth->createRole('Client'));
 
             $auth->add($developerRole);
 
@@ -33,12 +33,11 @@ class m999999_999999_mock_create_user extends Migration
 
             $this->batchInsert(
                 'user',
-                ['email', 'auth_key', 'surname', 'name', 'password_hash', 'created_at', 'updated_at'],
+                ['email', 'auth_key', 'username', 'password_hash', 'created_at', 'updated_at'],
                 [
                     [
                         'developer@mail.ru',
                         'developer',
-                        'surname',
                         'name',
                         '$2y$13$DlHGpyqt4gLQaTymkGoRR.gPDBKCTDTrB/xarORCVa4WkGJyCJuFC',
                         '0',
