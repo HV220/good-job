@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace common\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
@@ -40,16 +41,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return string[]
-     */
-    public function behaviors(): array
-    {
-        return array_merge(parent::behaviors(), [
-            TimestampBehavior::class,
-        ]);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public static function findIdentity($id): User|IdentityInterface|null
@@ -76,6 +67,16 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findIdentityByEmail($email): User|array|ActiveRecord|null
     {
         return User::find()->where(['email' => $email])->one();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function behaviors(): array
+    {
+        return array_merge(parent::behaviors(), [
+            TimestampBehavior::class,
+        ]);
     }
 
     /**
@@ -183,7 +184,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @param $password
      * @return void
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function setPassword($password): void
     {
@@ -192,7 +193,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @return void
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public function generateAuthKey(): void
     {
@@ -203,4 +204,5 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
+
 }

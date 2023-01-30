@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 /* @var View $this */
+
 /* @var false|string $assetDir */
 
 use yii\web\View;

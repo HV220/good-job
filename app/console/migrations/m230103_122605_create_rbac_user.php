@@ -17,11 +17,8 @@ class m230103_122605_create_rbac_user extends Migration
         $auth = Yii::$app->authManager;
 
         $permissions = [
-            'user/index' => 'Страница user - просмотр',
-            'user/create' => 'Страница user - создание',
-            'user/update' => 'Страница user - изменение',
-            'user/delete' => 'Страница user - удаление',
             'rbac/modules' => 'Страница rbac - полный доступ',
+            'contact/index' => 'Страница contact - index',
         ];
 
         foreach ($permissions as $permission => $description) {

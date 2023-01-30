@@ -19,10 +19,6 @@ class m999999_999999_mock_create_user extends Migration
 
             $developerRole = $auth->createRole('Developer');
 
-            $auth->add($auth->createRole('Manager'));
-
-            $auth->add($auth->createRole('Client'));
-
             $auth->add($developerRole);
 
             $permissions = $auth->getPermissions();

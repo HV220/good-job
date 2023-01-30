@@ -47,7 +47,7 @@ use yii\web\View;
                 <?= Html::submitButton('Войти', ['class' => 'btn btn-primary btn-block']) ?>
             </div>
             <div class="col-4">
-                <?= Html::a('Регистрация', ['site/registration'], ['class'=>'btn btn-primary']) ?>
+                <?= Html::a('Регистрация', ['site/registration'], ['class' => 'btn btn-primary']) ?>
             </div>
         </div>
 

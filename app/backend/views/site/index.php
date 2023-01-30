@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 /* @var View $this */
 
-use hail812\adminlte\widgets\SmallBox;
 use yii\web\View;
 
 $this->title = 'Starter Page';
 $this->params['breadcrumbs'] = [['label' => $this->title]];
-?>

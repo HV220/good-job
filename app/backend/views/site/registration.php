@@ -1,12 +1,14 @@
 <?php
 
 /** @var yii\web\View $this */
+
 /** @var yii\bootstrap5\ActiveForm $form */
+
 /** @var RegistrationForm $model */
 
 use common\models\RegistrationForm;
-use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
 
 $this->title = 'Регистрация';
 $this->params['breadcrumbs'][] = $this->title;
@@ -15,7 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row">
         <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
+            <?php
+            $form = ActiveForm::begin(['id' => 'form-signup']); ?>
 
             <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
@@ -24,10 +27,12 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'password')->passwordInput() ?>
 
             <div class="form-group">
-                <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                <?= Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-primary', 'name' => 'signup-button']
+                ) ?>
             </div>
 
-            <?php ActiveForm::end(); ?>
+            <?php
+            ActiveForm::end(); ?>
         </div>
     </div>
 </div>

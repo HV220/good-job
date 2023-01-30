@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use yii\caching\FileCache;
+use yii\symfonymailer\Mailer;
 
 return [
     'aliases' => [
@@ -23,6 +24,12 @@ return [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@yii2mod/rbac/messages',
                 ],
+            ],
+        ],
+        'mailer' => [
+            'class' => Mailer::class,
+            'transport' => [
+                'dsn' => 'sendgrid+smtp://9mxoc2-gS_OMNFF1uO3hbw@default',
             ],
         ],
     ],

@@ -1,24 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace common\models;
 
 use Yii;
 use yii\base\Model;
-use common\models\User;
 
 /**
- * Registration form
+ *
+ * @property string $username Электронная почта
+ * @property string $email Ключ аунтификации
+ * @property string $password Имя
+ *
+ * @property-read string $authKey
  */
 class RegistrationForm extends Model
 {
-    public $username;
-    public $email;
-    public $password;
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
+    public function rules(): array
     {
         return [
 
@@ -27,7 +30,12 @@ class RegistrationForm extends Model
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            [
+                'email',
+                'unique',
+                'targetClass' => '\common\models\User',
+                'message' => 'This email address has already been taken.'
+            ],
 
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
@@ -39,15 +47,18 @@ class RegistrationForm extends Model
      *
      * @return bool whether the creating new account was successful and email was sent
      */
-    public function registration()
+    public function registration(): ?bool
     {
         if (!$this->validate()) {
             return null;
         }
 
         $user = new User();
+
         $user->username = $this->username;
         $user->email = $this->email;
+        $user->status = User::STATUS_ACTIVE;
+
         $user->setPassword($this->password);
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
