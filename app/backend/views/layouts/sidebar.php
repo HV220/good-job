@@ -24,15 +24,14 @@ use yii\web\View;
                         'label' => 'Главная страница',
                         'url' => ['/index.php'],
                         'icon' => 'tachometer-alt',
-                        'visible' => Yii::$app->user->can('user/index'),
                     ],
-                    ['label' => 'Админка', 'header' => true, 'visible' => Yii::$app->user->can('Developer')],
                     [
-                        'label' => 'Пользователи',
-                        'url' => ['user/index'],
+                        'label' => 'Обратная связь',
+                        'url' => ['contact/index'],
                         'icon' => 'tachometer-alt',
-                        'visible' => Yii::$app->user->can('Developer')
+                        'visible' => Yii::$app->user->can('contact/index')
                     ],
+                    ['label' => 'Панель управления', 'header' => true, 'visible' => Yii::$app->user->can('Developer')],
                     [
                         'label' => 'assignment',
                         'url' => ['rbac/assignment'],

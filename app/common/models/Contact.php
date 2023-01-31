@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace common\models;
 
-use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -71,13 +70,13 @@ class Contact extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => Yii::t('app', 'ID'),
-            'title' => Yii::t('app', 'Title'),
-            'message' => Yii::t('app', 'Message'),
-            'line' => Yii::t('app', 'Line'),
-            'user_id' => Yii::t('app', 'User ID'),
-            'created_at' => Yii::t('app', 'created_at'),
-            'updated_at' => Yii::t('app', 'updated_at'),
+            'id' => 'ИД',
+            'title' => 'Тема',
+            'message' => 'Сообщение',
+            'line' => 'Ссылка',
+            'user_id' => 'Пользователь',
+            'created_at' => 'Создано',
+            'updated_at' => 'Обновлено',
         ];
     }
 
