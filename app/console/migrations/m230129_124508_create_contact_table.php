@@ -21,7 +21,10 @@ class m230129_124508_create_contact_table extends Migration
             'id' => $this->primaryKey()->comment('ИД'),
             'title' => $this->string()->notNull()->comment('Тема'),
             'message' => $this->text()->notNull()->comment('Сообщение'),
+            'line' => $this->string()->notNull()->comment('Ссылка на файл'),
             'user_id' => $this->integer()->notNull()->comment('Пользователь'),
+            'created_at' => $this->integer()->notNull()->comment('Создано'),
+            'updated_at' => $this->integer()->notNull()->comment('Обновлено'),
         ]);
 
         // creates index for column `user_id`

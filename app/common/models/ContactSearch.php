@@ -18,12 +18,14 @@ class ContactSearch extends Contact
     public string $username;
     public string $email;
     public int $created_at;
+    public $myPageSize;
+
 
     public function rules(): array
     {
         return [
             [['id', 'user_id'], 'integer'],
-            [['title', 'message'], 'safe'],
+            [['title', 'message', 'myPageSize'], 'safe'],
         ];
     }
 
@@ -50,9 +52,19 @@ class ContactSearch extends Contact
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 10,
+            ],
+            'sort' => [
+                'defaultOrder' => [
+                    'created_at' => SORT_DESC,
+                ]
+            ],
         ]);
 
         $this->load($params);
+
+        $dataProvider->pagination->pageSize = ($this->myPageSize !== null) ? $this->myPageSize : 10;
 
         if (!$this->validate()) {
             return $dataProvider;

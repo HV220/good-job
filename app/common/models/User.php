@@ -7,7 +7,6 @@ namespace common\models;
 use Yii;
 use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 

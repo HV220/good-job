@@ -61,6 +61,6 @@ class RegistrationForm extends Model
 
         $auth = Yii::$app->authManager;
 
-        return $user->save() && $auth->assign($auth->getRole('Developer'), $user->getId());
+        return $user->save() && $auth->assign($auth->getRole('Client'), $user->getId());
     }
 }

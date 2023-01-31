@@ -43,7 +43,6 @@ class m999999_999999_mock_create_user extends Migration
             );
 
             $auth->assign($developerRole, $this->db->lastInsertID);
-
         }
     }
 

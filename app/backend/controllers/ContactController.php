@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii2mod\rbac\filters\AccessControl;
 
 /**
  * ContactController implements the CRUD actions for Contact model.
@@ -24,14 +25,44 @@ class ContactController extends Controller
      */
     public function behaviors(): array
     {
-        return [
+        return array_merge(parent::behaviors(), [
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
-        ];
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'roles' => ['contact/index'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['view'],
+                        'roles' => ['contact/view'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['create'],
+                        'roles' => ['contact/create'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['update'],
+                        'roles' => ['contact/update'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['delete'],
+                        'roles' => ['contact/delete'],
+                        'allow' => true,
+                    ],
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -83,8 +114,18 @@ class ContactController extends Controller
         $model = new Contact();
         $model->user_id = Yii::$app->user->getId();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            if (!Yii::$app->cache->get($model->user_id . '_contact_create')) {
+                Yii::$app->cache->set($model->user_id . '_contact_create', true, 60 * 60 * 24);
+                $model->upload();
+                $model->save();
+
+                Yii::$app->session->setFlash('success', 'Сообщение успешно отправлено.');
+
+                return $this->redirect('index');
+            }
+
+            Yii::$app->session->setFlash('error', 'Создавать сообщение можно раз в 24 часа.');
         }
 
         return $this->render('create', [
