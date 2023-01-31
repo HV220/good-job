@@ -96,4 +96,3 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <!--.row-->
 </div>
-
