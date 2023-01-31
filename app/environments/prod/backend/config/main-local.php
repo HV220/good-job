@@ -9,4 +9,10 @@ return [
             'cookieValidationKey' => '',
         ],
     ],
+    'targets' => [
+        'file' => [
+            'class' => 'yii\log\FileTarget',
+            'enabled' => false
+        ],
+    ],
 ];
