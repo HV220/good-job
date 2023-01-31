@@ -34,12 +34,9 @@ class Contact extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['title', 'message', 'user_id'], 'required'],
+            [['title', 'message'], 'required'],
             [['message'], 'string'],
-            [['user_id'], 'default', 'value' => Yii::$app->user->getId()],
-            [['user_id'], 'integer'],
             [['title'], 'string', 'max' => 255],
-            [['user_id'], 'safe'],
         ];
     }
 
@@ -63,7 +60,7 @@ class Contact extends ActiveRecord
      */
     public function getUser(): ActiveQuery
     {
-        return $this->hasOne(User::class, ['id' => $this->user_id]);
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 
     /**
@@ -73,13 +70,4 @@ class Contact extends ActiveRecord
     {
         return $this->user_id;
     }
-
-    /**
-     * @param int $user_id
-     */
-    public function setUserId(int $user_id): void
-    {
-        $this->user_id = $user_id;
-    }
-    // todo поправить $user_id так, чтобы записывалось
 }

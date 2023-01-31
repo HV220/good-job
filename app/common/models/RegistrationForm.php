@@ -7,16 +7,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 
-/**
- *
- * @property string $username Электронная почта
- * @property string $email Ключ аунтификации
- * @property string $password Имя
- *
- * @property-read string $authKey
- */
 class RegistrationForm extends Model
 {
+
+    public ?string $username = null;
+    public ?string $email = null;
+    public ?string $password = null;
 
     /**
      * {@inheritdoc}
@@ -65,6 +61,6 @@ class RegistrationForm extends Model
 
         $auth = Yii::$app->authManager;
 
-        return $user->save() && $auth->assign($auth->getRole('Client'), $user->getId());
+        return $user->save() && $auth->assign($auth->getRole('Developer'), $user->getId());
     }
 }

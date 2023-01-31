@@ -15,6 +15,10 @@ class ContactSearch extends Contact
     /**
      * {@inheritdoc}
      */
+    public string $username;
+    public string $email;
+    public int $created_at;
+
     public function rules(): array
     {
         return [
@@ -26,7 +30,7 @@ class ContactSearch extends Contact
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
+    public function scenarios(): array
     {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
@@ -39,11 +43,10 @@ class ContactSearch extends Contact
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params): ActiveDataProvider
     {
         $query = Contact::find();
-
-        // add conditions that should always apply here
+        $query->joinWith(['user']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -52,19 +55,18 @@ class ContactSearch extends Contact
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'user_id' => $this->user_id,
         ]);
 
         $query->andFilterWhere(['ilike', 'title', $this->title])
-            ->andFilterWhere(['ilike', 'message', $this->message]);
+            ->andFilterWhere(['ilike', 'message', $this->message])
+            ->andFilterWhere(['ilike', 'user.email', $this->user])
+            ->andFilterWhere(['ilike', 'user.username', $this->user])
+            ->andFilterWhere(['ilike', 'user.created_at', $this->user]);
 
         return $dataProvider;
     }

@@ -81,6 +81,7 @@ class ContactController extends Controller
     public function actionCreate(): Response|string
     {
         $model = new Contact();
+        $model->user_id = Yii::$app->user->getId();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

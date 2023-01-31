@@ -7,6 +7,7 @@ namespace common\models;
 use Yii;
 use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -200,9 +201,12 @@ class User extends ActiveRecord implements IdentityInterface
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
-    public function generateEmailVerificationToken()
+    /**
+     * @return void
+     * @throws Exception
+     */
+    public function generateEmailVerificationToken(): void
     {
         $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
-
 }

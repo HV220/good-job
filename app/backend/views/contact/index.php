@@ -35,8 +35,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filterModel' => $searchModel,
                         'columns' => [
                             ['class' => 'yii\grid\SerialColumn'],
-
-                            'id',
+                            [
+                                'attribute' => 'user',
+                                'value' => 'user.username'
+                            ],
+                            [
+                                'attribute' => 'email',
+                                'value' => 'user.email'
+                            ],
+                            [
+                                'attribute' => 'created_at',
+                                'value' => 'user.created_at'
+                            ],
                             'title',
                             'message:ntext',
 
