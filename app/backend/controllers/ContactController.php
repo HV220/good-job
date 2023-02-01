@@ -117,8 +117,11 @@ class ContactController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             if (!Yii::$app->cache->get($model->user_id . '_contact_create')) {
                 Yii::$app->cache->set($model->user_id . '_contact_create', true, 60 * 60 * 24);
-                $model->upload();
-                $model->save();
+
+                if (!(!$model->upload() || !$model->save())) {
+                    Yii::$app->session->setFlash('error', 'Ошибка при загрузке файла');
+                    return $this->redirect('index');
+                }
 
                 Yii::$app->session->setFlash('success', 'Сообщение успешно отправлено.');
 

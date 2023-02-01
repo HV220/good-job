@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace common\models;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -16,14 +17,14 @@ use yii\web\UploadedFile;
  * @property string $title Тема
  * @property string $message Сообщение
  * @property string $line Cсылка на файл
- * @property int $user_id Пользователь
+ * @property int $user_id ID Клиента
  * @property int $created_at Создано
  * @property int $updated_at Обновлено
- * @property User $user
+ * @property User $user Пользователь
  */
 class Contact extends ActiveRecord
 {
-    public $file;
+    public mixed $file = null;
 
     /**
      * {@inheritdoc}
@@ -59,7 +60,7 @@ class Contact extends ActiveRecord
                 'skipOnEmpty' => false,
                 'checkExtensionByMimeType' => true,
                 'maxSize' => 3145728,
-                'tooBig' => 'Limit is 3mb',
+                'tooBig' => 'Максимальный размер: 3 мегабайта',
             ],
         ];
     }
@@ -69,15 +70,16 @@ class Contact extends ActiveRecord
      */
     public function attributeLabels(): array
     {
-        return [
+        return array_merge(parent::attributeLabels(), [
             'id' => 'ИД',
             'title' => 'Тема',
-            'message' => 'Сообщение',
-            'line' => 'Ссылка',
-            'user_id' => 'Пользователь',
-            'created_at' => 'Создано',
+            'message' => 'Текст сообщения',
+            'line' => 'Ссылка на прикрепленный файл',
+            'user_id' => 'ID Клиента',
+            'created_at' => 'Время отправки сообщения',
             'updated_at' => 'Обновлено',
-        ];
+            'file' => 'Файл',
+        ]);
     }
 
     /**
@@ -106,7 +108,7 @@ class Contact extends ActiveRecord
         $this->file = UploadedFile::getInstance($this, 'file');
 
         if ($this->file->extension === 'exe' || $this->file->extension === 'jar' || $this->file->extension === 'bat') {
-            $this->addError("file", "wrong format of file");
+            $this->addError("file", "Данный формат не поддерживается");
 
             return false;
         }
@@ -116,9 +118,39 @@ class Contact extends ActiveRecord
 
             $this->line = '/uploads/' . $this->file->baseName . '.' . $this->file->extension;
 
+            $this->sendMessageEmail();
+
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function sendMessageEmail(): bool
+    {
+        $usersManager = Yii::$app->authManager->getUserIdsByRole('Manager');
+
+        if (!$usersManager) {
+            return false;
+        }
+
+        $managers = User::find()->where(['id' => $usersManager])->all();
+
+        $item = array();
+
+        foreach ($managers as $manager) {
+            $item[] = [$manager->email => $manager->username];
+        }
+
+        Yii::$app->mailer->compose('contact/html')
+            ->setFrom('from@domain.com')
+            ->setTo($item)
+            ->setSubject($this->message)
+            ->send();
+
+        return true;
     }
 }

@@ -29,7 +29,7 @@ return [
         'mailer' => [
             'class' => Mailer::class,
             'transport' => [
-                'dsn' => 'sendgrid+smtp://9mxoc2-gS_OMNFF1uO3hbw@default',
+                'dsn' => 'smtp://user:pass@smtp.example.com:25',
             ],
         ],
     ],

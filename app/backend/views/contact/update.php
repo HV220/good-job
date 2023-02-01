@@ -5,7 +5,7 @@ declare(strict_types=1);
 /* @var $this yii\web\View */
 /* @var $model common\models\Contact */
 
-$this->title = 'Update Contact: ' . $model->title;
+$this->title = 'Обновить форму обратной связи ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Contacts', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

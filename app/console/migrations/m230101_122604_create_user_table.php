@@ -23,8 +23,8 @@ class m230101_122604_create_user_table extends Migration
             'verification_token' => $this->string()->defaultValue(null)->comment('Токен верификации'),
             'password_hash' => $this->string()->notNull()->comment('Хэш пароля'),
             'password_reset_token' => $this->string()->unique()->comment('Токен сброса пароля'),
-            'created_at' => $this->integer()->notNull()->comment('Создано'),
-            'updated_at' => $this->integer()->notNull()->comment('Обновлено'),
+            'created_at' => $this->integer()->notNull()->comment('Время создания Клиента'),
+            'updated_at' => $this->integer()->notNull()->comment('Время обновления Клиента'),
         ]);
     }
 

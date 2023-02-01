@@ -18,14 +18,14 @@ class ContactSearch extends Contact
     public string $username;
     public string $email;
     public int $created_at;
-    public $myPageSize;
+    public mixed $myPageSize = null;
 
 
     public function rules(): array
     {
         return [
-            [['id', 'user_id'], 'integer'],
-            [['title', 'message', 'myPageSize'], 'safe'],
+            [['id'], 'integer'],
+            [['title', 'myPageSize'], 'safe'],
         ];
     }
 
@@ -56,9 +56,9 @@ class ContactSearch extends Contact
                 'pageSize' => 10,
             ],
             'sort' => [
-                'defaultOrder' => [
-                    'created_at' => SORT_DESC,
-                ]
+                'attributes' => [
+                    'created_at',
+                ],
             ],
         ]);
 
@@ -70,8 +70,8 @@ class ContactSearch extends Contact
             return $dataProvider;
         }
 
-        // grid filtering conditions
         $query->andFilterWhere([
+
         ]);
 
         $query->andFilterWhere(['ilike', 'title', $this->title])

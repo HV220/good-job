@@ -21,7 +21,7 @@ use yii\web\IdentityInterface;
  * @property string|null $verification_token Токен верификации
  * @property string $password_hash Хэш пароля
  * @property string|null $password_reset_token Токен сброса пароля
- * @property int $created_at Создано
+ * @property int $created_at Время создания Клиента
  * @property int $updated_at Обновлено
  *
  * @property-read string $authKey
@@ -114,7 +114,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function attributeLabels(): array
     {
-        return [
+        return array_merge(parent::attributeLabels(), [
             'id' => 'ИД',
             'email' => 'Электронная почта',
             'auth_key' => 'Ключ аунтификации',
@@ -123,9 +123,9 @@ class User extends ActiveRecord implements IdentityInterface
             'verification_token' => 'Токен верификации',
             'password_hash' => 'Хэш пароля',
             'password_reset_token' => 'Токен сброса пароля',
-            'created_at' => 'Создано',
+            'created_at' => 'Время создания Клиента',
             'updated_at' => 'Обновлено',
-        ];
+        ]);
     }
 
     /**

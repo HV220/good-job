@@ -5,7 +5,7 @@ declare(strict_types=1);
 use yii\helpers\ArrayHelper;
 use yii\web\Application;
 
-defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_DEBUG') or define('YII_DEBUG', false);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 require __DIR__ . '/../../vendor/autoload.php';

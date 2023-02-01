@@ -10,7 +10,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel common\models\ContactSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Contacts';
+$this->title = 'Обратная связь';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     if (Yii::$app->user->can('contact/create')) { ?>
                         <div class="row mb-2">
                             <div class="col-md-12">
-                                <?= Html::a('Create Contact', ['create'], ['class' => 'btn btn-success']) ?>
+                                <?= Html::a('Создать обращение', ['create'], ['class' => 'btn btn-success']) ?>
                             </div>
                         </div>
                         <?php
@@ -50,21 +50,22 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ) . "{items}<br/>{pager}",
                             'columns' => [
                                 ['class' => 'yii\grid\SerialColumn'],
+                                'user_id',
                                 [
-                                    'attribute' => 'user',
+                                    'attribute' => 'Имя Клиента',
                                     'value' => 'user.username'
                                 ],
                                 [
-                                    'attribute' => 'email',
+                                    'attribute' => 'E-mail Клиента',
                                     'value' => 'user.email'
                                 ],
                                 [
-                                    'attribute' => 'created_at',
+                                    'attribute' => 'Время создания Клиента',
                                     'value' => function ($dataProvider) {
                                         return Yii::$app->formatter->asDatetime($dataProvider->user->created_at);
                                     }
                                 ],
-                                'title',
+                                'title' => 'Тема сообщения',
                                 'message:ntext',
                                 [
                                     'attribute' => 'line',
