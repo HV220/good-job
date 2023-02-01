@@ -65,7 +65,10 @@ $this->params['breadcrumbs'][] = $this->title;
                                         return Yii::$app->formatter->asDatetime($dataProvider->user->created_at);
                                     }
                                 ],
-                                'title' => 'Тема сообщения',
+                                [
+                                    'attribute' => 'Тема сообщения',
+                                    'value' => 'title',
+                                ],
                                 'message:ntext',
                                 [
                                     'attribute' => 'line',

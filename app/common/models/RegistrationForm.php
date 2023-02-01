@@ -59,8 +59,8 @@ class RegistrationForm extends Model
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
-        $auth = Yii::$app->authManager;
+        $user->save();
 
-        return $user->save() && $auth->assign($auth->getRole('Client'), $user->getId());
+        return Yii::$app->user->login($user, 0);
     }
 }

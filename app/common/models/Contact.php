@@ -47,6 +47,43 @@ class Contact extends ActiveRecord
     /**
      * {@inheritdoc}
      */
+    public function afterSave($insert, $changedAttributes): void
+    {
+        if ($insert) {
+//            $this->sendMessageEmail();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function sendMessageEmail(): bool
+    {
+        $usersManager = Yii::$app->authManager->getUserIdsByRole('Manager');
+
+        if (!$usersManager) {
+            return false;
+        }
+
+        $managers = User::findAll(['id' => $usersManager]);
+
+        $item = [];
+
+        foreach ($managers as $manager) {
+            $item[] = $manager->email;
+        }
+        Yii::$app->mailer->compose()
+            ->setFrom($_ENV['SMTP_USER'])
+            ->setTo('diagenin321@gmail.com')
+            ->setSubject($this->title)
+            ->setTextBody($this->message)
+            ->send();
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function rules(): array
     {
         return [
@@ -57,7 +94,7 @@ class Contact extends ActiveRecord
             [
                 ['file'],
                 'file',
-                'skipOnEmpty' => false,
+                'skipOnEmpty' => true,
                 'checkExtensionByMimeType' => true,
                 'maxSize' => 3145728,
                 'tooBig' => 'Максимальный размер: 3 мегабайта',
@@ -118,39 +155,9 @@ class Contact extends ActiveRecord
 
             $this->line = '/uploads/' . $this->file->baseName . '.' . $this->file->extension;
 
-            $this->sendMessageEmail();
-
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function sendMessageEmail(): bool
-    {
-        $usersManager = Yii::$app->authManager->getUserIdsByRole('Manager');
-
-        if (!$usersManager) {
-            return false;
-        }
-
-        $managers = User::find()->where(['id' => $usersManager])->all();
-
-        $item = array();
-
-        foreach ($managers as $manager) {
-            $item[] = [$manager->email => $manager->username];
-        }
-
-        Yii::$app->mailer->compose('contact/html')
-            ->setFrom('from@domain.com')
-            ->setTo($item)
-            ->setSubject($this->message)
-            ->send();
-
-        return true;
     }
 }

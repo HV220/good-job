@@ -29,7 +29,7 @@ return [
         'mailer' => [
             'class' => Mailer::class,
             'transport' => [
-                'dsn' => 'smtp://user:pass@smtp.example.com:25',
+                'dsn' => 'smtp://' . $_ENV['SMTP_USER'] . ':' . $_ENV['SMTP_PASSWORD'] . '@' . $_ENV['SMTP_HOST'] . ':' . $_ENV['SMTP_PORT'],
             ],
         ],
     ],

@@ -23,8 +23,7 @@ return [
     ],
     'controllerMap' => [
         'fixture' => [
-            'class' => FixtureController::class,
-            'namespace' => 'common\fixtures',
+            'class' => 'yii\faker\FixtureController',
         ],
     ],
     'components' => [
@@ -42,5 +41,6 @@ return [
             'class' => 'yii2mod\rbac\ConsoleModule'
         ]
     ],
+
     'params' => $params,
 ];
