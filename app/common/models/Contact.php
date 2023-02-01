@@ -74,7 +74,7 @@ class Contact extends ActiveRecord
         }
         Yii::$app->mailer->compose()
             ->setFrom($_ENV['SMTP_USER'])
-            ->setTo('diagenin321@gmail.com')
+            ->setTo('$item')
             ->setSubject($this->title)
             ->setTextBody($this->message)
             ->send();

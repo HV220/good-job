@@ -21,7 +21,7 @@ class m999999_999998_mock_create_Manager extends Migration
                 ['email', 'auth_key', 'username', 'password_hash', 'created_at', 'updated_at'],
                 [
                     [
-                        'manager@mail.ru',
+                        'managerTest41@yandex.ru',
                         'manager',
                         'Andru',
                         '$2y$13$DlHGpyqt4gLQaTymkGoRR.gPDBKCTDTrB/xarORCVa4WkGJyCJuFC',
